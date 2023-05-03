@@ -174,6 +174,10 @@ app.get("/", (req, res) => {
   res.send("Hello World");
 });
 
+app.all("*", (req, res) => {
+  res.send("no route found");
+});
+
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
 });
