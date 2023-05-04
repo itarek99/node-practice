@@ -4,4 +4,9 @@ const getAllTools = (req, res) => {
 const addNewTool = (req, res) => {
   res.send("tool add");
 };
-module.exports = { getAllTools, addNewTool };
+const toolDetails = (req, res) => {
+  const { params } = req;
+
+  res.send("tool details for " + params.id);
+};
+module.exports = { getAllTools, addNewTool, toolDetails };

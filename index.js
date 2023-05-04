@@ -8,9 +8,11 @@ const PORT = process.env.PORT || 8080;
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const { dbConnect } = require("./utils/dbConnect");
 const toolsRoutes = require("./routes/tools.route");
+const viewCount = require("./middleware/viewCount");
 
 app.use(cors());
 app.use(express.json());
+// app.use(viewCount);
 
 dbConnect();
 app.use("/api/tools", toolsRoutes);
