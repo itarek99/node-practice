@@ -7,7 +7,10 @@ const tools = [
 ];
 
 const getAllTools = (req, res) => {
-  res.json(tools);
+  res.status(200).json({
+    success: true,
+    data: tools,
+  });
 };
 const addNewTool = (req, res) => {
   const newTool = req.body;
