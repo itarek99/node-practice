@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 dbConnect();
-app.use("/tools", toolsRoutes);
+app.use("/api/tools", toolsRoutes);
 
 async function run() {
   try {
