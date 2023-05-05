@@ -39,6 +39,10 @@ const toolDetails = async (req, res, next) => {
   let db = getDb();
   try {
     const { id } = req.params;
+    if (!ObjectId.isValid(id)) {
+      return res.stats(400).send({ status: false, message: "invalid id" });
+    }
+
     const collection = await db.collection("tools");
     const result = await collection.findOne({ _id: new ObjectId(id) });
     if (!result) {
@@ -55,7 +59,7 @@ const toolDelete = async (req, res, next) => {
     const { id } = req.params;
     const collection = await db.collection("tools");
     const result = await collection.deleteOne({ _id: new ObjectId(id) });
-    if (result.deletedCount === 0) {
+    if (!result.deletedCount) {
       return res.status(409).send({ status: false, message: "failed to delete" });
     }
     res.status(200).send({ status: true, message: "successfully deleted" });
@@ -63,4 +67,23 @@ const toolDelete = async (req, res, next) => {
     next(error);
   }
 };
-module.exports = { getAllTools, addNewTool, toolDetails, toolDelete };
+const toolUpdate = async (req, res, next) => {
+  let db = getDb();
+  try {
+    const { id } = req.params;
+    const collection = await db.collection("tools");
+    const filter = { _id: new ObjectId(id) };
+    const updateDoc = {
+      $set: req.body,
+    };
+    const options = { upsert: false };
+    const result = await collection.updateOne(filter, updateDoc, options);
+    if (!result.matchedCount) {
+      return res.status(400).send({ status: false, message: "failed to update" });
+    }
+    res.status(200).send({ status: true, message: "successfully updated" });
+  } catch (error) {
+    next(error);
+  }
+};
+module.exports = { getAllTools, addNewTool, toolDetails, toolDelete, toolUpdate };
