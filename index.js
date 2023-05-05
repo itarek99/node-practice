@@ -14,7 +14,7 @@ app.use(express.static("public"));
 connectToServer((err) => {
   if (!err) {
     app.listen(PORT, () => {
-      console.log(`Example app listening on port ${PORT}`);
+      console.log(`server running on port ${PORT}`);
     });
   } else {
     console.log(err);

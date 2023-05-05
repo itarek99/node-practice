@@ -1,5 +1,5 @@
 const { MongoClient } = require("mongodb");
-const Db = process.env.ATLAS_URI;
+const Db = process.env.MONGO_URI;
 const client = new MongoClient(Db, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -7,19 +7,17 @@ const client = new MongoClient(Db, {
 
 let _db;
 
-module.exports = {
-  connectToServer: async function (callback) {
-    try {
-      await client.connect();
-    } catch (error) {
-      callback(error);
-    }
-
+const connectToServer = async (callback) => {
+  try {
+    await client.connect();
     _db = client.db("tools");
-
-    return callback();
-  },
-  getDb: function () {
-    return _db;
-  },
+    callback();
+  } catch (error) {
+    callback(error);
+  }
 };
+const getDb = () => {
+  return _db;
+};
+
+module.exports = { connectToServer, getDb };
