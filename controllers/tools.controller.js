@@ -1,3 +1,5 @@
+const { getDb } = require("../utils/dbConnect");
+
 const tools = [
   { id: 1, title: "Hammer" },
   { id: 2, title: "Screwdriver" },
@@ -6,16 +8,28 @@ const tools = [
   { id: 5, title: "Chisel" },
 ];
 
-const getAllTools = (req, res) => {
-  res.status(200).json({
-    success: true,
-    data: tools,
-  });
+const getAllTools = async (req, res, next) => {
+  let db = getDb();
+
+  try {
+    const collection = await db.collection("tools");
+    const result = await collection.find({}).toArray();
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
 };
-const addNewTool = (req, res) => {
-  const newTool = req.body;
-  tools.push(newTool);
-  res.json(tools);
+const addNewTool = async (req, res, next) => {
+  let db = getDb();
+  try {
+    const collection = await db.collection("tools");
+    const tool = req.body;
+    tool.date = new Date();
+    const result = await collection.insertOne(tool);
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
 };
 const toolDetails = (req, res) => {
   const { params } = req;

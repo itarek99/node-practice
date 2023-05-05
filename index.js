@@ -3,15 +3,24 @@ const cors = require("cors");
 require("dotenv").config();
 const app = express();
 const PORT = process.env.PORT || 8080;
-const { dbConnect } = require("./utils/dbConnect");
 const toolsRoutes = require("./routes/tools.route");
 const errorHandler = require("./middleware/errorHandler");
+const { connectToServer } = require("./utils/dbConnect");
 
 app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
 
-dbConnect();
+connectToServer((err) => {
+  if (!err) {
+    app.listen(PORT, () => {
+      console.log(`Example app listening on port ${PORT}`);
+    });
+  } else {
+    console.log(err);
+  }
+});
+
 app.use("/api/tools", toolsRoutes);
 
 app.get("/", (req, res) => {
@@ -23,14 +32,3 @@ app.all("*", (req, res) => {
 });
 
 app.use(errorHandler);
-
-const server = app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}`);
-});
-
-process.on("unhandledRejection", (error) => {
-  console.log(error.message, error.name);
-  server.close(() => {
-    process.exit(1);
-  });
-});

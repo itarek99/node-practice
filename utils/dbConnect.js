@@ -1,12 +1,25 @@
-const dbConnect = () => {
-  // const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.roc0q.mongodb.net/?retryWrites=true&w=majority`;
-  // const client = new MongoClient(uri, {
-  //   useNewUrlParser: true,
-  //   useUnifiedTopology: true,
-  //   serverApi: ServerApiVersion.v1,
-  // });
+const { MongoClient } = require("mongodb");
+const Db = process.env.ATLAS_URI;
+const client = new MongoClient(Db, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
-  console.log("db connected");
+let _db;
+
+module.exports = {
+  connectToServer: async function (callback) {
+    try {
+      await client.connect();
+    } catch (error) {
+      callback(error);
+    }
+
+    _db = client.db("tools");
+
+    return callback();
+  },
+  getDb: function () {
+    return _db;
+  },
 };
-
-module.exports = { dbConnect };
